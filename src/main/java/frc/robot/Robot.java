@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import frc.robot.TalonEncoder;
+import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -23,8 +27,13 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-WPI_TalonFX elevatorMotor;
-TalonFXSensorCollection elevEncoder;
+WPI_TalonSRX elevatorMotor;
+TalonEncoder elevEncoder;
+Elevator elevator;
+DigitalInput left;
+DigitalInput right;
+
+Joystick joy;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -34,9 +43,13 @@ TalonFXSensorCollection elevEncoder;
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-    elevatorMotor = new WPI_TalonFX(0);                                    //elevator port change!!!
-    elevEncoder = new TalonFXSensorCollection(elevatorMotor);
+    elevatorMotor = new WPI_TalonSRX(3);                                    //elevator port change!!!
+    elevEncoder = new TalonEncoder(elevatorMotor);
+    left = new DigitalInput(4);
+    right = new DigitalInput(3);
     //constructer + initialize motors here
+    elevator = new Elevator(elevatorMotor, left, right, elevEncoder);     //left is top limit switch, right is bottom
+    joy = new Joystick(0);
 
   }
 
@@ -87,7 +100,13 @@ TalonFXSensorCollection elevEncoder;
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    if(joy.getRawAxis(3) == -1){
+      elevator.elevatorTest();
+      elevator.test(joy.getY());
+    }
+    elevator.run();
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
