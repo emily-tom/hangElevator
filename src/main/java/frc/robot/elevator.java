@@ -25,6 +25,7 @@ public class Elevator {
     private double closeTopLimit;                   //encoder value, when close to the top limit switch, start to slow down         
     private double closeBotLimit;                   // -- bottom switch --
 
+
     //CONSTRUCTOR
     public Elevator(MotorController elevMotor, DigitalInput limitSwitchTop, DigitalInput limitSwitchBottom, TalonFXSensorCollection elevEncoder){
         elevatorMotor = elevMotor;
@@ -66,6 +67,13 @@ public class Elevator {
         elevatorMotor.set(JoystickY);
     }
 
+    private void dashboard(){
+        SmartDashboard.putNumber("ElevatorEncoder:", elevatorEncoder.getIntegratedSensorAbsolutePosition());
+        SmartDashboard.putBoolean("Elevator Top Limit:", limitTop.get());
+        SmartDashboard.putBoolean("Elevator Bottom Limit:", limitBot.get());
+        SmartDashboard.putNumber("Elevator Arm Speed:", elevatorMotor.get());
+        SmartDashboard.putString("Elevator Run State:", runState.toString());
+    }
     //EXTEND
     private void extend(){
         if(!limitTop.get()){                                                            //if not at top limit
