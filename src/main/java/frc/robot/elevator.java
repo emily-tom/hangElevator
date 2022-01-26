@@ -2,6 +2,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.DigitalInput;
+
+import javax.swing.text.DefaultStyledDocument.ElementSpec;
+
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -9,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //FALCON 500 (1)
 
 public class Elevator {
+   
     //MOTORS
     private MotorController elevatorMotor;
 
@@ -16,13 +20,12 @@ public class Elevator {
     private TalonEncoder elevatorEncoder;
 
     //SENSORS
-    private DigitalInput limitTop;                              
-    private DigitalInput limitBot;
+    private DigitalInput limitTop;          //4000                    
+    private DigitalInput limitBot;          //-1200
 
     //VALUES
-    private double closeTopLimit;                   //encoder value, when close to the top limit switch, start to slow down         
-    private double closeBotLimit;                   // -- bottom switch --
-
+    private double closeTopLimit = 0.50* 2094;                   //encoder value, when close to the top limit switch, start to slow down         
+    private double closeBotLimit = 600;                   // -- bottom switch --
 
     //CONSTRUCTOR
     public Elevator(MotorController elevMotor, DigitalInput limitSwitchTop, DigitalInput limitSwitchBottom, TalonEncoder elevEncoder){
@@ -65,46 +68,51 @@ public class Elevator {
         elevatorMotor.set(JoystickY);
     }
 
-    private void dashboard(){
-        SmartDashboard.putNumber("ElevatorEncoder:", elevatorEncoder.get());
-        SmartDashboard.putBoolean("Elevator Top Limit:", limitTop.get());
-        SmartDashboard.putBoolean("Elevator Bottom Limit:", limitBot.get());
-        SmartDashboard.putNumber("Elevator Arm Speed:", elevatorMotor.get());
-        SmartDashboard.putString("Elevator Run State:", runState.toString());
+    public void encoderReset(){
+        elevatorEncoder.reset();
     }
+    
     //EXTEND
     private void extend(){
-        if(!limitTop.get()){                                                            //if not at top limit
+        if(limitTop.get()){                                                            //if not at top limit
             if(elevatorEncoder.get() < closeTopLimit){              //and not close to limit
-                elevatorMotor.set(80);                                                          //extend fast
+                elevatorMotor.set(0.40);                                                          //extend fast
             }
             else{                                                                           //if close to limit
-                elevatorMotor.set(10);                                                          //extend slow
+                elevatorMotor.set(0.30);                                                          //extend slow
             }
         }
         else{                                                                           //until at top limit
-            elevatorStop();                                                                 //stop extension
+            elevatorStop();                                                             //stop extension
         }
     }
 
     //RETRACT
     private void retract(){
-        if(!limitBot.get()){
+        if(limitBot.get()){
             if(elevatorEncoder.get() > closeBotLimit){
-                elevatorMotor.set(-80);
+                elevatorMotor.set(-0.40);
             }
             else{
-                elevatorMotor.set(-10);
+                elevatorMotor.set(-0.30);
             }
         }
         else{
-            elevatorStop();
+            elevatorMotor.set(0);
+            elevatorEncoder.reset();
+
         }
     }
 
     //RUN
     public void run(){
+        SmartDashboard.putNumber("ElevatorEncoder:", elevatorEncoder.get());
+        SmartDashboard.putBoolean("Elevator left Limit:", !limitTop.get());
+        SmartDashboard.putBoolean("Elevator right Limit:", !limitBot.get());
+        SmartDashboard.putNumber("Elevator Arm Speed:", elevatorMotor.get());
+        SmartDashboard.putString("Elevator Run State:", runState.toString());
         switch(runState){
+            
             case STOP:
             stop();
             break;
@@ -116,11 +124,15 @@ public class Elevator {
             case RETRACT:
             retract();
             break;
-
+            
             case TESTING:
             break;
+
+            default:
+            stop();
+            break;
         }
-        dashboard();
+        
     }
     
 }

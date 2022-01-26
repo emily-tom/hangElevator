@@ -101,10 +101,32 @@ Joystick joy;
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+   
     if(joy.getRawAxis(3) == -1){
       elevator.elevatorTest();
       elevator.test(joy.getY());
     }
+
+    else if(joy.getRawAxis(3) == 1){
+
+      if(joy.getRawButton(5)){
+        elevator.elevatorExtend();
+      }
+
+      else if(joy.getRawButton(6)){
+        elevator.elevatorRetract();
+      }
+
+      else if(joy.getRawButton(3)){
+        elevator.elevatorStop();
+      }
+      else if(joy.getRawButton(4)){
+        elevator.encoderReset();
+      }
+      
+      else{}
+    }
+    SmartDashboard.putNumber("Joystick Axis", joy.getRawAxis(3));
     elevator.run();
   }
 
@@ -114,7 +136,9 @@ Joystick joy;
 
   /** This function is called periodically when disabled. */
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+   
+  }
 
   /** This function is called once when test mode is enabled. */
   @Override
