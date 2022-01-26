@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import frc.robot.TalonEncoder;
 import edu.wpi.first.wpilibj.Joystick;
 
 /**
@@ -27,11 +25,11 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-WPI_TalonSRX elevatorMotor;
-TalonEncoder elevEncoder;
+WPI_TalonFX elevatorMotor;
+TalonFXSensorCollection elevEncoder;
 Elevator elevator;
-DigitalInput left;
-DigitalInput right;
+DigitalInput top;
+DigitalInput bottom;
 
 Joystick joy;
   /**
@@ -43,12 +41,12 @@ Joystick joy;
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-    elevatorMotor = new WPI_TalonSRX(3);                                    //elevator port change!!!
-    elevEncoder = new TalonEncoder(elevatorMotor);
-    left = new DigitalInput(4);
-    right = new DigitalInput(3);
+    elevatorMotor = new WPI_TalonFX(3);                                    //elevator port change!!!
+    elevEncoder = new TalonFXSensorCollection(elevatorMotor);
+    top = new DigitalInput(4);
+    bottom = new DigitalInput(3);
     //constructer + initialize motors here
-    elevator = new Elevator(elevatorMotor, left, right, elevEncoder);     //left is top limit switch, right is bottom
+    elevator = new Elevator(elevatorMotor, top, bottom, elevEncoder);     //left is top limit switch, right is bottom
     joy = new Joystick(0);
 
   }
@@ -102,25 +100,25 @@ Joystick joy;
   @Override
   public void teleopPeriodic() {
    
-    if(joy.getRawAxis(3) == -1){
+    if(joy.getRawAxis(3) == -1){            //if axis is negative, testing mode
       elevator.elevatorTest();
       elevator.test(joy.getY());
     }
 
-    else if(joy.getRawAxis(3) == 1){
+    else if(joy.getRawAxis(3) == 1){       //if axis is positive, not testing
 
-      if(joy.getRawButton(5)){
+      if(joy.getRawButton(5)){              //button 5: extend elev
         elevator.elevatorExtend();
       }
 
-      else if(joy.getRawButton(6)){
+      else if(joy.getRawButton(6)){         //button 6: retract elev
         elevator.elevatorRetract();
       }
 
-      else if(joy.getRawButton(3)){
+      else if(joy.getRawButton(3)){         //button 3: stop elev
         elevator.elevatorStop();
       }
-      else if(joy.getRawButton(4)){
+      else if(joy.getRawButton(4)){         //button 4: reset enc
         elevator.encoderReset();
       }
       

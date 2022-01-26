@@ -2,9 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.DigitalInput;
-
-import javax.swing.text.DefaultStyledDocument.ElementSpec;
-
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -17,7 +14,7 @@ public class Elevator {
     private MotorController elevatorMotor;
 
     //ENCODERS
-    private TalonEncoder elevatorEncoder;
+    private TalonFXSensorCollection elevatorEncoder;
 
     //SENSORS
     private DigitalInput limitTop;          //4000                    
@@ -28,7 +25,7 @@ public class Elevator {
     private double closeBotLimit = 600;                   // -- bottom switch --
 
     //CONSTRUCTOR
-    public Elevator(MotorController elevMotor, DigitalInput limitSwitchTop, DigitalInput limitSwitchBottom, TalonEncoder elevEncoder){
+    public Elevator(MotorController elevMotor, DigitalInput limitSwitchTop, DigitalInput limitSwitchBottom, TalonFXSensorCollection elevEncoder){
         elevatorMotor = elevMotor;
         limitTop = limitSwitchTop;
         limitBot = limitSwitchBottom;
@@ -69,13 +66,13 @@ public class Elevator {
     }
 
     public void encoderReset(){
-        elevatorEncoder.reset();
+        elevatorEncoder.setIntegratedSensorPosition(0, 0);
     }
     
     //EXTEND
     private void extend(){
         if(limitTop.get()){                                                            //if not at top limit
-            if(elevatorEncoder.get() < closeTopLimit){              //and not close to limit
+            if(elevatorEncoder.getIntegratedSensorPosition() < closeTopLimit){              //and not close to limit
                 elevatorMotor.set(0.40);                                                          //extend fast
             }
             else{                                                                           //if close to limit
@@ -90,7 +87,7 @@ public class Elevator {
     //RETRACT
     private void retract(){
         if(limitBot.get()){
-            if(elevatorEncoder.get() > closeBotLimit){
+            if(elevatorEncoder.getIntegratedSensorPosition() > closeBotLimit){
                 elevatorMotor.set(-0.40);
             }
             else{
@@ -99,16 +96,16 @@ public class Elevator {
         }
         else{
             elevatorMotor.set(0);
-            elevatorEncoder.reset();
+            elevatorEncoder.setIntegratedSensorPosition(0, 0);
 
         }
     }
 
     //RUN
     public void run(){
-        SmartDashboard.putNumber("ElevatorEncoder:", elevatorEncoder.get());
-        SmartDashboard.putBoolean("Elevator left Limit:", !limitTop.get());
-        SmartDashboard.putBoolean("Elevator right Limit:", !limitBot.get());
+        SmartDashboard.putNumber("ElevatorEncoder:", elevatorEncoder.getIntegratedSensorPosition());
+        SmartDashboard.putBoolean("Elevator Top Limit:", !limitTop.get());
+        SmartDashboard.putBoolean("Elevator Bottom Limit:", !limitBot.get());
         SmartDashboard.putNumber("Elevator Arm Speed:", elevatorMotor.get());
         SmartDashboard.putString("Elevator Run State:", runState.toString());
         switch(runState){
