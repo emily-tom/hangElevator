@@ -102,7 +102,7 @@ Joystick joy;
    
     if(joy.getRawAxis(3) == -1){            //if axis is negative, testing mode
       elevator.elevatorTest();
-      elevator.test(joy.getY());
+      elevator.manualElev(joy.getY());
     }
 
     else if(joy.getRawAxis(3) == 1){       //if axis is positive, not testing
