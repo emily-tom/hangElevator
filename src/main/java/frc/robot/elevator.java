@@ -79,6 +79,10 @@ public class Elevator{
 
     }
 
+    private void elevMove(double speed){                                          //set speed to extend
+        elevatorMotor.set(speed);
+    }                                
+                 
     public void manualElev(double speed){
         if(!topLimitTouched() || !bottomLimitTouched())
         elevatorMotor.set(speed);
