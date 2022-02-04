@@ -87,6 +87,14 @@ public class Elevator{
         elevatorMotor.set(retractSpeed);
     }
 
+    private void elevExtendSlow(){
+        elevatorMotor.set(slowExtendSpeed);
+    }
+    
+    private void elevRetractSlow(){
+        elevatorMotor.set(slowRetractSpeed);
+    }
+
     public void manualElev(double speed){
         if(!topLimitTouched() || !bottomLimitTouched())
         elevatorMotor.set(speed);
