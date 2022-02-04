@@ -104,6 +104,15 @@ public class Elevator{
         elevatorEncoder.setIntegratedSensorPosition(0, 0);
     }
     
+    //CHECK
+    private boolean topLimitCheck(){                                                        //return true if past top encoder check
+        return elevatorEncoder.getIntegratedSensorPosition() > closeTopLimit;
+    }
+
+    private boolean botLimitCheck(){                                                                //return true if past bottom encoder check
+        return elevatorEncoder.getIntegratedSensorAbsolutePosition() < closeBotLimit;
+    }
+
     //EXTEND
     private void extend(){
         if(topLimitTouched()){                                                            //if not at top limit
