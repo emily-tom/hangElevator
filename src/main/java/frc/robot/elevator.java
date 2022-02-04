@@ -79,10 +79,14 @@ public class Elevator{
 
     }
 
-    private void elevMove(double speed){                                          //set speed to extend
-        elevatorMotor.set(speed);
-    }                                
-                 
+    private void elevExtend(){                                          //set speed to extend
+        elevatorMotor.set(extendSpeed);
+    }                
+    
+    private void elevRetract(){
+        elevatorMotor.set(retractSpeed);
+    }
+
     public void manualElev(double speed){
         if(!topLimitTouched() || !bottomLimitTouched())
         elevatorMotor.set(speed);
