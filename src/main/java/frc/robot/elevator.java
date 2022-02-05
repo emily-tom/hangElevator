@@ -38,24 +38,31 @@ public class Elevator{
     
     //ENUMERATIONS/STATES
     private enum elevatorState{
-        EXTEND, RETRACT, STOP, TESTING;
+        EXTEND, RETRACT, EXTENDSLOW, RETRACTSLOW, STOP, TESTING;
     }
     
     private elevatorState runState = elevatorState.STOP;        //default state     
 
-    public void elevatorExtend(){
+    public void setElevatorExtend(){
         runState = elevatorState.EXTEND;
     }
 
-    public void elevatorRetract(){
+    public void setElevatorRetract(){
         runState = elevatorState.RETRACT;
     }
 
-    public void elevatorStop(){
+    public void setElevatorExtendSlow(){
+        runState = elevatorState.EXTENDSLOW;
+    }
+
+    public void setElevatorRetractSlow(){
+        runState = elevatorState.RETRACTSLOW;
+    }
+    public void setElevatorStop(){
         runState = elevatorState.STOP;
     }
 
-    public void elevatorTest(){
+    public void setElevatorTest(){
         runState = elevatorState.TESTING;
     }
 
@@ -157,11 +164,19 @@ public class Elevator{
             break;
 
             case EXTEND:
-            extendToTopLimit();
+            elevExtend();
             break;
 
             case RETRACT:
-            retractToBottomLimit();
+            elevRetract();
+            break;
+
+            case EXTENDSLOW:
+            elevExtendSlow();
+            break;
+
+            case RETRACTSLOW:
+            elevRetractSlow();
             break;
             
             case TESTING:
