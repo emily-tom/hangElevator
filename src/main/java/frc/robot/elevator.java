@@ -61,11 +61,11 @@ public class Elevator{
 
     //CHECKS
     private boolean topLimitTouched(){      
-        return limitTop.get();
+        return !limitTop.get();
     }
 
     private boolean bottomLimitTouched(){      
-        return limitBot.get(); 
+        return !limitBot.get(); 
     }
 
 
@@ -115,7 +115,7 @@ public class Elevator{
 
     //EXTEND
     private void extend(){
-        if(!topLimitTouched()){
+        if(topLimitTouched()){
             elevatorMotor.set(0);
         }
         else{
@@ -130,7 +130,7 @@ public class Elevator{
 
     //RETRACT
     private void retract(){
-        if(!bottomLimitTouched()){
+        if(bottomLimitTouched()){
             elevatorMotor.set(0);
             elevatorEncoder.setIntegratedSensorPosition(0, 0);
         }
