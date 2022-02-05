@@ -21,12 +21,12 @@ public class Elevator{
     private DigitalInput limitBot;          //-1200
 
     //VALUES
-    private double closeTopLimit = 0.50* 2094;                   //encoder value, when close to the top limit switch, start to slow down         
-    private double closeBotLimit = 600;                   // -- bottom switch --
-    private double extendSpeed = 0.40;
-    private double slowExtendSpeed = 0.30;
-    private double retractSpeed = -0.40;
-    private double slowRetractSpeed = -0.30;
+    private double closeTopLimit = 0.50* 2094;                  //encoder value, when close to the top limit switch, start to slow down         
+    private double closeBotLimit = 600;                         // -- bottom switch --
+    private double extendSpeed = -0.40;                          //counter-clockwise to extend (-speed)
+    private double slowExtendSpeed = -0.30;
+    private double retractSpeed = 0.40;                         //clockwise to retract (+speed)
+    private double slowRetractSpeed = 0.30;
 
     //CONSTRUCTOR
     public Elevator(MotorController elevMotor, DigitalInput limitSwitchTop, DigitalInput limitSwitchBottom, TalonFXSensorCollection elevEncoder){
@@ -61,11 +61,11 @@ public class Elevator{
 
     //CHECKS
     private boolean topLimitTouched(){      
-        return !limitTop.get();
+        return limitTop.get();
     }
 
     private boolean bottomLimitTouched(){      
-        return !limitBot.get(); 
+        return limitBot.get(); 
     }
 
 
@@ -147,8 +147,8 @@ public class Elevator{
     //RUN
     public void run(){
         SmartDashboard.putNumber("ElevatorEncoder:", elevatorEncoder.getIntegratedSensorPosition());
-        SmartDashboard.putBoolean("Elevator Top Limit:", !limitTop.get());
-        SmartDashboard.putBoolean("Elevator Bottom Limit:", !limitBot.get());
+        SmartDashboard.putBoolean("Elevator Top Limit:", limitTop.get());
+        SmartDashboard.putBoolean("Elevator Bottom Limit:", limitBot.get());
         SmartDashboard.putNumber("Elevator Arm Speed:", elevatorMotor.get());
         SmartDashboard.putString("Elevator Run State:", runState.toString());
         switch(runState){
