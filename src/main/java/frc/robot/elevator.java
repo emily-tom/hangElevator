@@ -115,7 +115,10 @@ public class Elevator{
 
     //EXTEND
     private void extend(){
-        if(topLimitTouched()){                                                            //if not at top limit
+        if(!topLimitTouched()){
+            elevatorMotor.set(0);
+        }
+        else{
             if(elevatorEncoder.getIntegratedSensorPosition() < closeTopLimit){              //and not close to limit
                 elevatorMotor.set(extendSpeed);                                                          //extend fast
             }
@@ -123,24 +126,21 @@ public class Elevator{
                 elevatorMotor.set(slowExtendSpeed);                                                          //extend slow
             }
         }
-        else{                                                                           //until at top limit
-            elevatorMotor.set(0);                                                           //stop extension
         }
-    }
 
     //RETRACT
     private void retract(){
-        if(bottomLimitTouched()){
+        if(!bottomLimitTouched()){
+            elevatorMotor.set(0);
+            elevatorEncoder.setIntegratedSensorPosition(0, 0);
+        }
+        else{
             if(elevatorEncoder.getIntegratedSensorPosition() > closeBotLimit){
                 elevatorMotor.set(retractSpeed);
             }
             else{
                 elevatorMotor.set(slowRetractSpeed);
             }
-        }
-        else{
-            elevatorMotor.set(0);
-            elevatorEncoder.setIntegratedSensorPosition(0, 0);
         }
     }
 
