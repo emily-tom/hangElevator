@@ -21,8 +21,8 @@ public class Elevator{
     private DigitalInput limitBot;          //-1200
 
     //VALUES
-    private double closeTopLimit = 0.50* 2094;                  //encoder value, when close to the top limit switch, start to slow down         
-    private double closeBotLimit = 600;                         // -- bottom switch --
+    private double closeTopLimit = 0.50* -2094;                  //encoder value, when close to the top limit switch, start to slow down         
+    private double closeBotLimit = -600;                         // -- bottom switch --
     private double extendSpeed = -0.40;                          //counter-clockwise to extend (-speed)
     private double slowExtendSpeed = -0.30;
     private double retractSpeed = 0.40;                         //clockwise to retract (+speed)
@@ -60,17 +60,25 @@ public class Elevator{
     }
 
     //CHECKS
-    private boolean topLimitTouched(){      
+    public boolean topLimitTouched(){      
         return limitTop.get();
     }
 
-    private boolean bottomLimitTouched(){      
+    public boolean bottomLimitTouched(){      
         return limitBot.get(); 
+    }
+    
+    public boolean topEncoderLimitReached(){                                                        //return true if past top encoder check
+        return elevatorEncoder.getIntegratedSensorPosition() > closeTopLimit;
+    }
+    
+    public boolean botEncoderLimitReached(){                                                                //return true if past bottom encoder check
+        return elevatorEncoder.getIntegratedSensorAbsolutePosition() < closeBotLimit;
     }
 
 
     //STOP
-    private void stop(){
+    public void stop(){
         elevatorMotor.set(0);
     }
 
@@ -79,19 +87,20 @@ public class Elevator{
 
     }
 
-    private void elevExtend(){                                          //set speed to extend
+    //MANUALS
+    public void elevExtend(){                                          //set speed to extend
         elevatorMotor.set(extendSpeed);
     }                
     
-    private void elevRetract(){
+    public void elevRetract(){
         elevatorMotor.set(retractSpeed);
     }
 
-    private void elevExtendSlow(){
+    public void elevExtendSlow(){
         elevatorMotor.set(slowExtendSpeed);
     }
     
-    private void elevRetractSlow(){
+    public void elevRetractSlow(){
         elevatorMotor.set(slowRetractSpeed);
     }
 
@@ -104,22 +113,14 @@ public class Elevator{
         elevatorEncoder.setIntegratedSensorPosition(0, 0);
     }
     
-    //CHECK
-    private boolean topLimitCheck(){                                                        //return true if past top encoder check
-        return elevatorEncoder.getIntegratedSensorPosition() > closeTopLimit;
-    }
-
-    private boolean botLimitCheck(){                                                                //return true if past bottom encoder check
-        return elevatorEncoder.getIntegratedSensorAbsolutePosition() < closeBotLimit;
-    }
 
     //EXTEND
-    private void extend(){
+    public void extend(){
         if(topLimitTouched()){
             elevatorMotor.set(0);
         }
         else{
-            if(elevatorEncoder.getIntegratedSensorPosition() < closeTopLimit){              //and not close to limit
+            if(topEncoderLimitReached()){              //and not close to limit
                 elevatorMotor.set(extendSpeed);                                                          //extend fast
             }
             else{                                                                           //if close to limit
@@ -129,13 +130,13 @@ public class Elevator{
         }
 
     //RETRACT
-    private void retract(){
+    public void retract(){
         if(bottomLimitTouched()){
             elevatorMotor.set(0);
             elevatorEncoder.setIntegratedSensorPosition(0, 0);
         }
         else{
-            if(elevatorEncoder.getIntegratedSensorPosition() > closeBotLimit){
+            if(botEncoderLimitReached()){
                 elevatorMotor.set(retractSpeed);
             }
             else{
