@@ -75,11 +75,11 @@ public class Elevator{
         return limitBot.get(); 
     }
     
-    public boolean topEncoderLimitReached(){                                                //return true if past top encoder check
+    public boolean aboveTopEncoderLimit(){                                                //return true if past top encoder check
         return elevatorEncoder.getIntegratedSensorPosition() > closeTopLimit;
     }
     
-    public boolean botEncoderLimitReached(){                                                //return true if past bottom encoder check
+    public boolean belowBottomEncoderLimit(){                                                //return true if past bottom encoder check
         return elevatorEncoder.getIntegratedSensorAbsolutePosition() < closeBotLimit;
     }
 
@@ -125,7 +125,7 @@ public class Elevator{
             elevatorMotor.set(0);                                                           //stop extending
         }
         else{
-            if(topEncoderLimitReached()){                                                   //not at top limit but close to
+            if(aboveTopEncoderLimit()){                                                   //not at top limit but close to
                 elevatorMotor.set(slowExtendSpeed);                                         //extend slow
             }
             else{
@@ -141,7 +141,7 @@ public class Elevator{
             elevatorEncoder.setIntegratedSensorPosition(0, 0);                              //reset encoder (bottom limit should be 0 position)
         }
         else{
-            if(botEncoderLimitReached()){                                                   //if not at bottom limit but close to
+            if(belowBottomEncoderLimit()){                                                   //if not at bottom limit but close to
                 elevatorMotor.set(slowRetractSpeed);
             }
             else{                                                                           //if not at or close to bottom limit
