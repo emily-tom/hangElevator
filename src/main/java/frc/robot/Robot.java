@@ -100,22 +100,22 @@ Joystick joy;
   @Override
   public void teleopPeriodic() {
    
-    if(joy.getRawAxis(3) == -1){            //if axis is negative, testing mode
+    if(joy.getRawAxis(3) == -1){
       elevator.setElevatorTest();
-      elevator.manualElev(joy.getY());
+      elevatorMotor.set(joy.getY());
     }
 
     else if(joy.getRawAxis(3) == 1){       //if axis is positive, not testing
 
-      if(joy.getRawButton(5)){              //button 5: extend elev
+      if(joy.getRawButton(5)){
         elevator.setElevatorExtend();
       }
 
-      else if(joy.getRawButton(6)){         //button 6: retract elev
+      else if(joy.getRawButton(6)){
         elevator.setElevatorRetract();
       }
 
-      else if(joy.getRawButton(3)){         //button 3: stop elev
+      else if(joy.getRawButton(3)){
         elevator.setElevatorStop();
       }
       else if(joy.getRawButton(4)){         //button 4: reset enc

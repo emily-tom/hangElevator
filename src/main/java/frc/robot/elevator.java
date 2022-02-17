@@ -21,12 +21,12 @@ public class Elevator{
     private DigitalInput limitBot;          //-1200
 
     //VALUES
-    private double closeTopLimit = 0.50* -2094;                  //close to top limit switch enc. value         
-    private double closeBotLimit = -600;                         //close to bottom limit switch enc. value
-    private double extendSpeed = -0.40;                          //counter-clockwise to extend (-speed)
-    private double slowExtendSpeed = -0.30;
-    private double retractSpeed = 0.40;                         //clockwise to retract (+speed)
-    private double slowRetractSpeed = 0.30;
+    private double closeTopLimit = 0.50* 2094;                  //close to top limit switch enc. value         
+    private double closeBotLimit = 600;                         //close to bottom limit switch enc. value
+    private double extendSpeed = 0.40;                          //counter-clockwise to extend (-speed)
+    private double slowExtendSpeed = 0.30;
+    private double retractSpeed = -0.40;                         //clockwise to retract (+speed)
+    private double slowRetractSpeed = -0.30;
 
     //CONSTRUCTOR
     public Elevator(MotorController elevMotor, DigitalInput limitSwitchTop, DigitalInput limitSwitchBottom, TalonFXSensorCollection elevEncoder){
@@ -68,19 +68,19 @@ public class Elevator{
 
     //CHECKS
     public boolean topLimitTouched(){                                                       //return true if top limit switch is pressed
-        return limitTop.get();
+        return !limitTop.get();
     }
 
     public boolean bottomLimitTouched(){                                                    //return true if bottom limit switch is pressed
-        return limitBot.get(); 
+        return !limitBot.get(); 
     }
     
-    public boolean aboveTopEncoderLimit(){                                                //return true if past top encoder check
+    public boolean topEncoderLimitReached(){                                                //return true if past top encoder check
         return elevatorEncoder.getIntegratedSensorPosition() > closeTopLimit;
     }
     
-    public boolean belowBottomEncoderLimit(){                                                //return true if past bottom encoder check
-        return elevatorEncoder.getIntegratedSensorAbsolutePosition() < closeBotLimit;
+    public boolean botEncoderLimitReached(){                                                //return true if past bottom encoder check
+        return elevatorEncoder.getIntegratedSensorPosition() < closeBotLimit;
     }
 
 
@@ -93,19 +93,19 @@ public class Elevator{
     public void testing(){}
 
     //MANUALS
-    public void elevExtend(){                                                               //automatically set to extend speed value
+    private void elevExtend(){                                                               //automatically set to extend speed value
         elevatorMotor.set(extendSpeed);
     }                
     
-    public void elevRetract(){                                                              //automatically set to retract speed value
+    private void elevRetract(){                                                              //automatically set to retract speed value
         elevatorMotor.set(retractSpeed);
     }
 
-    public void elevExtendSlow(){                                                           //automatically set to extend slow speed value
+    private void elevExtendSlow(){                                                           //automatically set to extend slow speed value
         elevatorMotor.set(slowExtendSpeed);
     }
     
-    public void elevRetractSlow(){                                                          //automatically set to retract slow speed value
+    private void elevRetractSlow(){                                                          //automatically set to retract slow speed value
         elevatorMotor.set(slowRetractSpeed);
     }
 
@@ -115,7 +115,7 @@ public class Elevator{
     }
 
     public void encoderReset(){                                                             //reset elevator encoder value
-        elevatorEncoder.setIntegratedSensorPosition(0, 0);
+        elevatorEncoder.setIntegratedSensorPosition(0,0);
     }
     
 
@@ -125,7 +125,7 @@ public class Elevator{
             elevatorMotor.set(0);                                                           //stop extending
         }
         else{
-            if(aboveTopEncoderLimit()){                                                   //not at top limit but close to
+            if(topEncoderLimitReached()){                                                   //not at top limit but close to
                 elevatorMotor.set(slowExtendSpeed);                                         //extend slow
             }
             else{
@@ -138,10 +138,10 @@ public class Elevator{
     public void retractToBottomLimit(){
         if(bottomLimitTouched()){                                                           //if at bottom limit
             elevatorMotor.set(0);                                                           //stop retracting
-            elevatorEncoder.setIntegratedSensorPosition(0, 0);                              //reset encoder (bottom limit should be 0 position)
+            elevatorEncoder.setIntegratedSensorPosition(0, 0);                       //reset encoder (bottom limit should be 0 position)
         }
         else{
-            if(belowBottomEncoderLimit()){                                                   //if not at bottom limit but close to
+            if(botEncoderLimitReached()){                                                   //if not at bottom limit but close to
                 elevatorMotor.set(slowRetractSpeed);
             }
             else{                                                                           //if not at or close to bottom limit
@@ -164,11 +164,11 @@ public class Elevator{
             break;
 
             case EXTEND:
-            elevExtend();
+            extendToTopLimit();
             break;
 
             case RETRACT:
-            elevRetract();
+            retractToBottomLimit();
             break;
 
             case EXTENDSLOW:
