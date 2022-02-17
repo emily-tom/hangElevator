@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
 
 WPI_TalonFX elevatorMotor;
 TalonFXSensorCollection elevEncoder;
-Elevator elevator;
+Elevator Elevator;
 DigitalInput top;
 DigitalInput bottom;
 
@@ -46,7 +46,7 @@ Joystick joy;
     top = new DigitalInput(4);
     bottom = new DigitalInput(3);
     //constructer + initialize motors here
-    elevator = new Elevator(elevatorMotor, top, bottom, elevEncoder);     //left is top limit switch, right is bottom
+    Elevator = new Elevator(elevatorMotor, top, bottom, elevEncoder);     //left is top limit switch, right is bottom
     joy = new Joystick(0);
 
   }
@@ -101,31 +101,31 @@ Joystick joy;
   public void teleopPeriodic() {
    
     if(joy.getRawAxis(3) == -1){
-      elevator.setElevatorTest();
+      Elevator.setElevatorTest();
       elevatorMotor.set(joy.getY());
     }
 
     else if(joy.getRawAxis(3) == 1){       //if axis is positive, not testing
 
       if(joy.getRawButton(5)){
-        elevator.setElevatorExtend();
+        Elevator.setElevatorExtend();
       }
 
       else if(joy.getRawButton(6)){
-        elevator.setElevatorRetract();
+        Elevator.setElevatorRetract();
       }
 
       else if(joy.getRawButton(3)){
-        elevator.setElevatorStop();
+        Elevator.setElevatorStop();
       }
       else if(joy.getRawButton(4)){         //button 4: reset enc
-        elevator.encoderReset();
+        Elevator.encoderReset();
       }
       
       else{}
     }
     SmartDashboard.putNumber("Joystick Axis", joy.getRawAxis(3));
-    elevator.run();
+    Elevator.run();
   }
 
   /** This function is called once when the robot is disabled. */

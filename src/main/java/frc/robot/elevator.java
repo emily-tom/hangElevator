@@ -27,6 +27,7 @@ public class Elevator{
     private double slowExtendSpeed = 0.30;
     private double retractSpeed = -0.40;                         //clockwise to retract (+speed)
     private double slowRetractSpeed = -0.30;
+    private double pivotableEnc = 1600; 
 
     //CONSTRUCTOR
     public Elevator(MotorController elevMotor, DigitalInput limitSwitchTop, DigitalInput limitSwitchBottom, TalonFXSensorCollection elevEncoder){
@@ -75,14 +76,17 @@ public class Elevator{
         return !limitBot.get(); 
     }
     
-    public boolean topEncoderLimitReached(){                                                //return true if past top encoder check
+    public boolean aboveTopEncoderLimitReached(){                                                //return true if past top encoder check
         return elevatorEncoder.getIntegratedSensorPosition() > closeTopLimit;
     }
     
-    public boolean botEncoderLimitReached(){                                                //return true if past bottom encoder check
+    public boolean belowBottomEncoderLimitReached(){                                                //return true if past bottom encoder check
         return elevatorEncoder.getIntegratedSensorPosition() < closeBotLimit;
     }
 
+    public boolean pivotableEncoderReached(){
+        return elevatorEncoder.getIntegratedSensorPosition() > pivotableEnc; 
+    }
 
     //STOP
     public void stop(){                                                                     //stop elevator motor
@@ -125,7 +129,7 @@ public class Elevator{
             elevatorMotor.set(0);                                                           //stop extending
         }
         else{
-            if(topEncoderLimitReached()){                                                   //not at top limit but close to
+            if(aboveTopEncoderLimitReached()){                                                   //not at top limit but close to
                 elevatorMotor.set(slowExtendSpeed);                                         //extend slow
             }
             else{
@@ -141,7 +145,7 @@ public class Elevator{
             elevatorEncoder.setIntegratedSensorPosition(0, 0);                       //reset encoder (bottom limit should be 0 position)
         }
         else{
-            if(botEncoderLimitReached()){                                                   //if not at bottom limit but close to
+            if(belowBottomEncoderLimitReached()){                                                   //if not at bottom limit but close to
                 elevatorMotor.set(slowRetractSpeed);
             }
             else{                                                                           //if not at or close to bottom limit
