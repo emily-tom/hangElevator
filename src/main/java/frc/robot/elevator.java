@@ -100,7 +100,7 @@ public class Elevator{
     private void elevExtend(){                                                               //automatically set to extend speed value
         elevatorMotor.set(extendSpeed);
     }                
-    
+     
     private void elevRetract(){                                                              //automatically set to retract speed value
         elevatorMotor.set(retractSpeed);
     }

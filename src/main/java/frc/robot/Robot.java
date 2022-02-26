@@ -41,15 +41,26 @@ Joystick joy;
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
-    elevatorMotor = new WPI_TalonFX(3);                                    //elevator port change!!!
+    elevatorMotor = new WPI_TalonFX(2);                                    //elevator port change!!!
     elevEncoder = new TalonFXSensorCollection(elevatorMotor);
-    top = new DigitalInput(4);
-    bottom = new DigitalInput(3);
+    top = new DigitalInput(2);
+    bottom = new DigitalInput(1);
     //constructer + initialize motors here
     Elevator = new Elevator(elevatorMotor, top, bottom, elevEncoder);     //left is top limit switch, right is bottom
     joy = new Joystick(0);
 
   }
+
+  //fx 1 : shooter
+  //fx 2: elevator hang
+  //srx 3: intake
+  //srx 4: pivot hang
+  //digital input 2: top elevator limit switch              pressed is t/f    reversed/not
+  //digital input 1: bottom elevator limit switch           pressed is t/f    reversed/not
+  //digital input 3: inward pivot limit switch              pressed is t/f    reversed/not
+  //digital input 0: outward pivot limit switch             pressed is t/f    reversed/not
+  //brake mode for pivot arm, to keep it in its position
+
 
   /**
    * This function is called every robot packet, no matter the mode. Use this for items like
@@ -88,10 +99,9 @@ Joystick joy;
       case kDefaultAuto:
       default:
         // Put default auto code here
-        break;
-    }
+        break; 
+      }
   }
-
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {}
@@ -122,9 +132,11 @@ Joystick joy;
         Elevator.encoderReset();
       }
       
-      else{}
+      else{}  
     }
     SmartDashboard.putNumber("Joystick Axis", joy.getRawAxis(3));
+    SmartDashboard.putBoolean("BOTTOM ELEVATOR LIMIT SWITCH:", top.get());
+    SmartDashboard.putBoolean("TOP ELEVATOR LIMIT SWITCH:", bottom.get());
     Elevator.run();
   }
 
@@ -135,7 +147,7 @@ Joystick joy;
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {
-   
+    
   }
 
   /** This function is called once when test mode is enabled. */
@@ -146,3 +158,4 @@ Joystick joy;
   @Override
   public void testPeriodic() {}
 }
+ 
