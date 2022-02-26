@@ -77,15 +77,15 @@ public class Elevator{
     }
     
     public boolean aboveTopEncoderLimit(){                                                //return true if past top encoder check
-        return elevatorEncoder.getIntegratedSensorPosition() > closeTopLimit;
+        return Math.abs(elevatorEncoder.getIntegratedSensorPosition()) > closeTopLimit;
     }
     
     public boolean belowBottomEncoderLimit(){                                                //return true if past bottom encoder check
-        return elevatorEncoder.getIntegratedSensorPosition() < closeBotLimit;
+        return Math.abs(elevatorEncoder.getIntegratedSensorPosition()) < closeBotLimit;
     }
 
     public boolean pivotableEncoderReached(){
-        return elevatorEncoder.getIntegratedSensorPosition() > pivotableEnc; 
+        return Math.abs(elevatorEncoder.getIntegratedSensorPosition()) > pivotableEnc; 
     }
 
     //STOP
@@ -156,7 +156,7 @@ public class Elevator{
 
     //RUN
     public void run(){
-        SmartDashboard.putNumber("ElevatorEncoder:", elevatorEncoder.getIntegratedSensorPosition());
+        SmartDashboard.putNumber("ElevatorEncoder:", Math.abs(elevatorEncoder.getIntegratedSensorPosition()));
         SmartDashboard.putBoolean("Elevator Top Limit:", limitTop.get());
         SmartDashboard.putBoolean("Elevator Bottom Limit:", limitBot.get());
         SmartDashboard.putNumber("Elevator Arm Speed:", elevatorMotor.get());
