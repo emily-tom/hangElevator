@@ -9,9 +9,11 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Joystick.AxisType;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -30,6 +32,7 @@ TalonFXSensorCollection elevEncoder;
 Elevator Elevator;
 DigitalInput top;
 DigitalInput bottom;
+
 
 Joystick joy;
   /**
@@ -110,7 +113,7 @@ Joystick joy;
   @Override
   public void teleopPeriodic() {
    
-    if(joy.getRawAxis(3) == -1){
+    if(joy.getRawAxis(Joystick.AxisType.kThrottle.value) == -1){            //get raw axis 3
       Elevator.setElevatorTest();
       elevatorMotor.set(joy.getY());
     }
@@ -128,7 +131,7 @@ Joystick joy;
       else if(joy.getRawButton(3)){
         Elevator.setElevatorStop();
       }
-      else if(joy.getRawButton(4)){         //button 4: reset enc
+      else if(joy.getRawButton(4)){         //button 4: reset enc at bottom switch pressed
         Elevator.encoderReset();
       }
       

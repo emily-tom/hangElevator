@@ -17,8 +17,8 @@ public class Elevator{
     private TalonFXSensorCollection elevatorEncoder;
 
     //SENSORS
-    private DigitalInput limitTop;          //4000                    
-    private DigitalInput limitBot;          //-1200
+    private DigitalInput limitTop;          //                
+    private DigitalInput limitBot;          //0
 
     //VALUES
     private double closeTopLimit = 0.50* 2094;                  //close to top limit switch enc. value         
@@ -156,7 +156,8 @@ public class Elevator{
 
     //RUN
     public void run(){
-        SmartDashboard.putNumber("ElevatorEncoder:", Math.abs(elevatorEncoder.getIntegratedSensorPosition()));
+        SmartDashboard.putNumber("ElevatorEncoder Absolute Value:", Math.abs(elevatorEncoder.getIntegratedSensorPosition()));
+        SmartDashboard.putNumber("ElevatorEncoder Real Value:", elevatorEncoder.getIntegratedSensorPosition());
         SmartDashboard.putBoolean("Elevator Top Limit:", limitTop.get());
         SmartDashboard.putBoolean("Elevator Bottom Limit:", limitBot.get());
         SmartDashboard.putNumber("Elevator Arm Speed:", elevatorMotor.get());
