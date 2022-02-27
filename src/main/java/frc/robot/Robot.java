@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.Joystick;
@@ -51,6 +51,7 @@ Joystick joy;
     //constructer + initialize motors here
     Elevator = new Elevator(elevatorMotor, top, bottom, elevEncoder);     //left is top limit switch, right is bottom
     joy = new Joystick(0);
+    elevatorMotor.setNeutralMode(NeutralMode.Brake);                    //sets motor to brake mode
 
   }
 
@@ -112,45 +113,40 @@ Joystick joy;
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-   /*
-    if(joy.getRawAxis(Joystick.AxisType.kThrottle.value) == -1){            //get raw axis 3
-      Elevator.setElevatorTest();
-      elevatorMotor.set(joy.getY());
-    }
-
-    else if(joy.getRawAxis(3) == 1){       //if axis is positive, not testing*/
-      if(joy.getRawButton(4)){
-      Elevator.setElevatorTest();
-      Elevator.testing(joy.getY());
+   
+    if(joy.getRawAxis(3) == -1){            //get raw axis 3
+      if(joy.getRawButton(4)){            //btn 4 + drive elevator with joystick (Y)
+        Elevator.setElevatorTest();
+        Elevator.testing(joy.getY());
       }
-
+      else if(joy.getRawButton(5)){         //button 4: reset enc at bottom switch pressed
+        Elevator.encoderReset();
+      }
       else{
         Elevator.setElevatorStop();
-      }
+      }          
+    }
 
-      //elevatorMotor.set(joy.getY());
-     /* if(joy.getRawButton(5)){
+    else if(joy.getRawAxis(3) == 1){       //if axis is positive, not testing
+     if(joy.getRawButton(5)){               //btn 5 = extend enum
         Elevator.setElevatorExtend();
       }
 
-      else if(joy.getRawButton(6)){
+      else if(joy.getRawButton(6)){        //btn 6 = retract enum
         Elevator.setElevatorRetract();
       }
 
-      else if(joy.getRawButton(3)){
-        Elevator.setElevatorStop();
-      }
       else if(joy.getRawButton(4)){         //button 4: reset enc at bottom switch pressed
         Elevator.encoderReset();
       }
       
-      else{}  
+      else{
+        Elevator.setElevatorStop();
+      }  
       
     }
-    */
+    //SmartDashboard.putString("Elevator Neutral Mode:", elevatorMotor.neutralOutput())
     SmartDashboard.putNumber("Joystick Axis", joy.getRawAxis(3));
-    SmartDashboard.putBoolean("BOTTOM ELEVATOR LIMIT SWITCH:", top.get());
-    SmartDashboard.putBoolean("TOP ELEVATOR LIMIT SWITCH:", bottom.get());
     Elevator.run();
   }
 

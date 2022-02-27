@@ -4,7 +4,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+//UP IS NEGATIVE!!
 
 //FALCON 500 (1)
 
@@ -17,18 +17,19 @@ public class Elevator{
     private TalonFXSensorCollection elevatorEncoder;
 
     //SENSORS
-    private DigitalInput limitTop;          //                
+    private DigitalInput limitTop;          //346374.0, 348279, 348412, 351491   == 348639    
     private DigitalInput limitBot;          //0
 
     //VALUES
-    private double closeTopLimit = 0.50* 2094;                  //close to top limit switch enc. value         
-    private double closeBotLimit = 600;                         //close to bottom limit switch enc. value
-    private double extendSpeed = 0.40;                          //counter-clockwise to extend (-speed)
-    private double slowExtendSpeed = 0.30;
+    private double closeTopLimit = 0.75* 348639;                  //close to top limit switch enc. value         
+    private double closeBotLimit = 0.25 * 348639;                 //close to bottom limit switch enc. value
+    private double extendSpeed = 0.40;                         //counter-clockwise to extend (-speed)
+    private double slowExtendSpeed = 0.20;
     private double retractSpeed = -0.40;                         //clockwise to retract (+speed)
-    private double slowRetractSpeed = -0.30;
+    private double slowRetractSpeed = -0.20;
     private double pivotableEnc = 1600; 
-
+    private double equalToPivot = 57227.6;                            //encoder count for elevator to be same height as pivot
+//58593, , 55551, 55390, 59987, 56617
     //CONSTRUCTOR
     public Elevator(MotorController elevMotor, DigitalInput limitSwitchTop, DigitalInput limitSwitchBottom, TalonFXSensorCollection elevEncoder){
         elevatorMotor = elevMotor;
@@ -69,11 +70,11 @@ public class Elevator{
 
     //CHECKS
     public boolean topLimitTouched(){                                                       //return true if top limit switch is pressed
-        return !limitTop.get();
+        return limitTop.get();
     }
 
     public boolean bottomLimitTouched(){                                                    //return true if bottom limit switch is pressed
-        return !limitBot.get(); 
+        return limitBot.get(); 
     }
     
     public boolean aboveTopEncoderLimit(){                                                //return true if past top encoder check
@@ -86,6 +87,10 @@ public class Elevator{
 
     public boolean pivotableEncoderReached(){
         return Math.abs(elevatorEncoder.getIntegratedSensorPosition()) > pivotableEnc; 
+    }
+
+    public boolean elevatorEqualToPivot(){
+        return Math.abs(elevatorEncoder.getIntegratedSensorAbsolutePosition()) == equalToPivot;
     }
 
     //STOP
@@ -162,12 +167,15 @@ public class Elevator{
 
     //RUN
     public void run(){
-        SmartDashboard.putNumber("ElevatorEncoder Absolute Value:", Math.abs(elevatorEncoder.getIntegratedSensorPosition()));
-        SmartDashboard.putNumber("ElevatorEncoder Real Value:", elevatorEncoder.getIntegratedSensorPosition());
-        SmartDashboard.putBoolean("Elevator Top Limit:", limitTop.get());
-        SmartDashboard.putBoolean("Elevator Bottom Limit:", limitBot.get());
-        SmartDashboard.putNumber("Elevator Arm Speed:", elevatorMotor.get());
-        SmartDashboard.putString("Elevator Run State:", runState.toString());
+        SmartDashboard.putNumber("ElevatorEncoder Absolute Value:", Math.abs(elevatorEncoder.getIntegratedSensorPosition()));       //print abs val of elev enc
+        SmartDashboard.putNumber("ElevatorEncoder Real Value:", elevatorEncoder.getIntegratedSensorPosition());                     //actual val of elev enc
+        SmartDashboard.putBoolean("Elevator Top Limit:", limitTop.get());                                                           //top limit switch
+        SmartDashboard.putBoolean("Elevator Bottom Limit:", limitBot.get());                                                        //bot limit switch
+        SmartDashboard.putNumber("Elevator Arm Speed:", elevatorMotor.get());                                                       //speed of the elev
+        SmartDashboard.putString("Elevator Run State:", runState.toString());                                                       //enum of the elev
+        SmartDashboard.putBoolean("Above Top Encoder Limit:", aboveTopEncoderLimit());
+        SmartDashboard.putBoolean("Below Bottom Encoder Limit:", belowBottomEncoderLimit());
+        SmartDashboard.putBoolean("Pivotable Encoder Reached", pivotableEncoderReached());
         switch(runState){
             
             case STOP:
