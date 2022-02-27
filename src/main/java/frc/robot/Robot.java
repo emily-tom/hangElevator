@@ -48,7 +48,7 @@ Joystick joy;
     elevEncoder = new TalonFXSensorCollection(elevatorMotor);
     top = new DigitalInput(2);
     bottom = new DigitalInput(1);
-    //constructer + initialize motors here
+    //constructor + initialize motors here
     Elevator = new Elevator(elevatorMotor, top, bottom, elevEncoder);     //left is top limit switch, right is bottom
     joy = new Joystick(0);
     elevatorMotor.setNeutralMode(NeutralMode.Brake);                    //sets motor to brake mode

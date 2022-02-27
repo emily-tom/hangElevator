@@ -27,7 +27,7 @@ public class Elevator{
     private double slowExtendSpeed = 0.20;
     private double retractSpeed = -0.40;                         //clockwise to retract (+speed)
     private double slowRetractSpeed = -0.20;
-    private double pivotableEnc = 1600; 
+    private double pivotableEnc = 170000; 
     private double equalToPivot = 57227.6;                            //encoder count for elevator to be same height as pivot
 //58593, , 55551, 55390, 59987, 56617
     //CONSTRUCTOR
@@ -86,7 +86,7 @@ public class Elevator{
     }
 
     public boolean pivotableEncoderReached(){
-        return Math.abs(elevatorEncoder.getIntegratedSensorPosition()) > pivotableEnc; 
+        return Math.abs(elevatorEncoder.getIntegratedSensorPosition()) < pivotableEnc; 
     }
 
     public boolean elevatorEqualToPivot(){
