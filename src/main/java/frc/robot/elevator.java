@@ -93,8 +93,14 @@ public class Elevator{
         elevatorMotor.set(0);
     }
 
+    public void empty(){
+
+    }
+
     //TESTING
-    public void testing(){}
+    public void testing(double speed){
+        elevatorMotor.set(speed);
+    }
 
     //MANUALS
     private void elevExtend(){                                                               //automatically set to extend speed value
@@ -185,12 +191,9 @@ public class Elevator{
             break;
             
             case TESTING:
-            testing();
+            empty();
             break;
 
-            default:
-            stop();
-            break;
         }
         
     }

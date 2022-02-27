@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.Joystick.AxisType;
+//import edu.wpi.first.wpilibj.Joystick.AxisType;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -58,8 +58,8 @@ Joystick joy;
   //fx 2: elevator hang
   //srx 3: intake
   //srx 4: pivot hang
-  //digital input 2: top elevator limit switch              pressed is t/f    reversed/not
-  //digital input 1: bottom elevator limit switch           pressed is t/f    reversed/not
+  //digital input 2: top elevator limit switch              pressed is t
+  //digital input 1: bottom elevator limit switch           pressed is t
   //digital input 3: inward pivot limit switch              pressed is t/f    reversed/not
   //digital input 0: outward pivot limit switch             pressed is t/f    reversed/not
   //brake mode for pivot arm, to keep it in its position
@@ -112,15 +112,24 @@ Joystick joy;
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-   
+   /*
     if(joy.getRawAxis(Joystick.AxisType.kThrottle.value) == -1){            //get raw axis 3
       Elevator.setElevatorTest();
       elevatorMotor.set(joy.getY());
     }
 
-    else if(joy.getRawAxis(3) == 1){       //if axis is positive, not testing
+    else if(joy.getRawAxis(3) == 1){       //if axis is positive, not testing*/
+      if(joy.getRawButton(4)){
+      Elevator.setElevatorTest();
+      Elevator.testing(joy.getY());
+      }
 
-      if(joy.getRawButton(5)){
+      else{
+        Elevator.setElevatorStop();
+      }
+
+      //elevatorMotor.set(joy.getY());
+     /* if(joy.getRawButton(5)){
         Elevator.setElevatorExtend();
       }
 
@@ -136,7 +145,9 @@ Joystick joy;
       }
       
       else{}  
+      
     }
+    */
     SmartDashboard.putNumber("Joystick Axis", joy.getRawAxis(3));
     SmartDashboard.putBoolean("BOTTOM ELEVATOR LIMIT SWITCH:", top.get());
     SmartDashboard.putBoolean("TOP ELEVATOR LIMIT SWITCH:", bottom.get());
